@@ -1,0 +1,25 @@
+{
+	"links": [
+		"templates/environment/test.json",
+		"templates/network/dev01-app-vlan.json"
+	],
+
+	"name": "dev01",
+	"description": "a dev environment",
+
+	"msDeployPort": "8080",
+
+    "settings": {
+        "bar":  "foo"
+    },
+
+	"applications": [
+		{
+			"name": "notepad",
+			"settings": {
+				"a": "overridden",
+				"c": "3"
+			}
+		}
+	]
+}

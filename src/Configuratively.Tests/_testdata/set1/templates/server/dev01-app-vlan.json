@@ -1,0 +1,3 @@
+{
+	"networks": ["dev01-app-vlan","admin"]
+}

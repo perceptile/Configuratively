@@ -1,0 +1,9 @@
+{
+    "environmentType": "dev",
+
+    "appPort": "81",
+
+    "settings": {
+        "bar":  "bar-dev"
+    }
+}

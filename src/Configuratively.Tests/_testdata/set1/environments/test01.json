@@ -1,0 +1,19 @@
+{
+	"links": [
+		"templates/environment/test.json"
+	],
+
+	"name": "test01",
+	"description": "a test environment",
+
+	"networks": [
+		{
+			"name": "Network09",
+			"type": "direct"
+		},
+        {
+			"name": "Admin",
+			"disabled": "true"
+		}
+	]
+}

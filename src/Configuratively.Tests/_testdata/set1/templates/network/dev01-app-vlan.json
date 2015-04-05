@@ -1,0 +1,31 @@
+{
+	"networks": [
+		{
+			"name": "dev01_app_vlan",
+			"type": "routed",
+			"connect_to": "Frontend NAT Network",
+			"gateway": "192.168.2.1",
+			"staticippool": "192.168.2.100 - 192.168.2.199",
+			"netmask": "255.255.255.0",
+			"primarydns": "8.8.8.8",
+			"syslogserver": "172.26.2.8",
+			"firewall": {
+				"defaultaction": "drop",
+				"logdefaultaction": false,
+				"isenabled": true,
+				"rules": [
+					{
+						"id": "all_outbound",
+						"description": "Allow all outgoing traffic",
+						"protocols": {
+						    "ANY": true
+						},
+						"policy": "allow",
+						"destinationIp": "external",
+						"sourceIp": "internal"
+					}
+				]
+			}
+		}
+	]
+}

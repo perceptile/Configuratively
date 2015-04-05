@@ -1,0 +1,12 @@
+{
+	"links": [
+		"templates/environment/test.json"
+	],
+
+	"name": "systest",
+	"description": "system test environment",
+
+    "settings": {
+        "bar":  "foo-systest"
+    }
+}

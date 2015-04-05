@@ -1,0 +1,24 @@
+{
+	"links": [
+		"templates/network/admin.json"
+	],
+
+    "environmentType": "test",
+    "chef": {
+        "register": true
+    },
+    "msDeployPort": "80",
+    "settings": {
+        "foo":  "bar"
+    },
+
+	"applications": [
+		{
+			"name": "notepad",
+			"settings": {
+				"a": "1",
+				"b": "2"
+			}
+		}
+	]
+}

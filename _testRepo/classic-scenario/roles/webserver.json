@@ -1,0 +1,6 @@
+{
+    "settings": {
+        "bar": "foo-webserver",
+        "foo": "bar-webserver"
+    }
+}

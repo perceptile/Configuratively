@@ -1,0 +1,11 @@
+{
+	"domain": "dev.kingsway.asos.com",
+
+	"networks": ["admin"],
+	"chef": {
+		"runlist": [
+			"role[base]"
+		]
+	},
+	"startup_order": 100
+}

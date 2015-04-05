@@ -1,0 +1,6 @@
+{
+    "settings": {
+        "bar": "foo-webtier",
+        "foo": "bar-webtier"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "environmentType": "test",
+
+    "appPort": "80",
+
+    "settings": {
+        "bar":  "bar-test"
+    }
+}

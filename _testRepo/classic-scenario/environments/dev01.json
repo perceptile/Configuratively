@@ -1,0 +1,12 @@
+{
+	"links": [
+		"templates/environment/dev.json"
+	],
+
+	"name": "dev01",
+	"description": "development environment",
+
+    "settings": {
+        "bar2":  "foo2-dev01"
+    }
+}

@@ -1,0 +1,11 @@
+{
+	"networks": [
+		{
+		"name": "Admin",
+		"type": "direct",
+		"connect_to": "Admin Network",
+		"bootstrap": true,
+		"disabled": "false"
+		}
+	]
+}
