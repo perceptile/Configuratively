@@ -1,4 +1,6 @@
 {
+	"name": "web",
+	
 	"settings" : {
 		"packageOverride" : true 
 	}
