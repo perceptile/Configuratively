@@ -7,6 +7,7 @@
 	"description": "development environment",
 
     "settings": {
-        "bar2":  "foo2-dev01"
+        "bar2":  "foo2-dev01",
+        "packageOverride": false
     }
 }
