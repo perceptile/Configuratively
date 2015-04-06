@@ -26,6 +26,15 @@ namespace Configuratively.Api
                 Get[route.Key] = _ => Response.AsJson((ExpandoObject)route.Value);
             }
 
+            Get["{parent}/{child}"] = _ =>
+            {
+                var parent = routes.FirstOrDefault(pair => pair.Key.EndsWith(_["parent"]));
+                var child = routes.FirstOrDefault(pair => pair.Key.EndsWith(_["child"]));
+
+                return Response.AsJson((ExpandoObject)DynamicMerge.DoMerge(child.Value, parent.Value));
+            };
+
+            // Define query endpoints
             var entities = (new MappingManager()).Entities;
             foreach (var e in entities.Keys)
             {
