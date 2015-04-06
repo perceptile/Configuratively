@@ -38,15 +38,19 @@ namespace Configuratively.Workers
 
                 // Process the json files
                 var dr = new DynamicRepository(repositoryFullPath);
-                var jsonDocuments = Helpers.ReadAllJsonFiles(crInfo, repositoryFullPath, string.Empty);
+                var jsonDocuments = Helpers.ReadAllJsonFiles(crInfo, repositoryFullPath, "");
                 dr.ProcessAllLinks(jsonDocuments);
 
                 // Construct our dynamic query taxonomy
                 var entities = (new MappingManager()).Entities;
                 foreach (var e in entities.Keys)
                 {
-                    IEnumerable<dynamic> envs = dr.Repo.Where(i => Regex.Match(i._id.ToString(), entities[e]).Success).ToList();
-                    InMemoryRepository.Persist(e, envs);
+                    // Simple map
+                    if (!string.IsNullOrEmpty(entities[e]))
+                    {
+                        IEnumerable<dynamic> items = dr.Repo.Where(i => Regex.IsMatch(i._id.ToString(), entities[e])).ToList();
+                        InMemoryRepository.Persist(e, items);
+                    }
                 }
 
                 // Now make the changes we've made above live
@@ -65,3 +69,5 @@ namespace Configuratively.Workers
         }
     }
 }
+
+
