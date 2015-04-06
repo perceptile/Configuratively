@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using JsonFx.Json;
 
 namespace Configuratively.Domain
 {
@@ -21,7 +19,7 @@ namespace Configuratively.Domain
             var repoPath = Path.GetFullPath(ConfigurationManager.AppSettings["repoPath"]);
             var mappingFile = Path.Combine(repoPath, ConfigurationManager.AppSettings["mappingFile"]);
 
-            var jr = new JsonFx.Json.JsonReader();
+            var jr = new JsonReader();
             dynamic mappings = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(mappingFile)));
             Entities = new Dictionary<string, string>();
             foreach (var m in mappings)

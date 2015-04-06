@@ -22,6 +22,15 @@ namespace Configuratively.Api
             {
                 Get[route.Key] = _ => Response.AsJson((ExpandoObject)route.Value);
             }
+
+            Get["merge/{parent}/{child}"] = _ =>
+            {
+                var parent = routes.FirstOrDefault(pair => pair.Key.EndsWith(_["parent"]));
+                var child = routes.FirstOrDefault(pair => pair.Key.EndsWith(_["child"]));
+
+                return Response.AsJson((ExpandoObject)DynamicMerge.DoMerge(child.Value, parent.Value));
+            };
+
         }
 
         public static Dictionary<string, dynamic> GetConfigurationRoutes()
@@ -32,7 +41,7 @@ namespace Configuratively.Api
             // Generate the root endpoint
             var resources = entities.Keys.Select(k => string.Format("{0}/{1}", hostUri, k)).ToArray();
 
-            Dictionary<string, dynamic> routes = new Dictionary<string, dynamic>();
+            var routes = new Dictionary<string, dynamic>();
 
             routes["/"] = new {resources};
 
