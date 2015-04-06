@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using Configuratively.Api;
 using Configuratively.Hosting;
 using Configuratively.Workers;
 using JsonFx.Json;
 using JsonFx.Serialization;
+using Nancy.Testing;
 using PowerArgs;
 using Topshelf;
 
@@ -46,19 +46,24 @@ namespace Configuratively
         [ArgActionMethod, ArgDescription("Exports the configuration resource to a specified file.")]
         public void Export(
             [ArgRequired]
+            [ArgDescription("The path to the configuration repository.")]string repositoryPath, 
+            [ArgRequired]
             [ArgDescription("The route to the configuration resource.")]string route, 
             [ArgRequired]
             [ArgDescription("The relative filepath to save the resource to.")]string path)
         {
-            new ConfigRepoSync().Synchronise();
-            var routes = ConfigurationModule.GetConfigurationRoutes();
+            new ConfigRepoSync().Synchronise(repositoryPath);
 
-            var configuration = routes[route];
+            var browser = new Browser(new AnonymousBootstrapper());
+            var result = browser.Get(route);
+
+            var jsonReader = new JsonReader();
+            var jsonObject = jsonReader.Read(result.Body.AsString());
 
             using (var stream = new StreamWriter(path))
             {
                 var writer = new JsonWriter(new DataWriterSettings{PrettyPrint = true});
-                writer.Write(configuration, stream);
+                writer.Write(jsonObject, stream);
             }
         }
     }
