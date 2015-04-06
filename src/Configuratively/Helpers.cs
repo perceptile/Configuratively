@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using JsonFx.Json;
 
 namespace Configuratively
 {
@@ -22,23 +22,25 @@ namespace Configuratively
             var jsonFiles = files.Where(
                     f => f.StartsWith(jsonBasePath, StringComparison.InvariantCultureIgnoreCase)
                         && Path.GetExtension(f).Equals(".json", StringComparison.InvariantCultureIgnoreCase))
-                .Select(t => GetDynamicFromJson(new FileInfo(t), jsonBasePath));
+                .Select(t => GetDynamicWithRouteFromJson(new FileInfo(t), jsonBasePath));
 
             return jsonFiles;
         }
 
 
 
-        private static dynamic GetDynamicFromJson(FileInfo fileInfo, string basePath)
+        private static dynamic GetDynamicWithRouteFromJson(FileInfo fileInfo, string basePath)
         {
             try
             {
-                var jr = new JsonFx.Json.JsonReader();
+                var jr = new JsonReader();
                 dynamic obj = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(fileInfo.FullName)));
 
                 // generate an identifier
                 obj._id = GetIdFromFileInfo(fileInfo, basePath);
                 obj._isLinksResolved = false;
+
+                obj._route = obj._id.Replace(fileInfo.Extension, string.Empty);
 
                 return obj;
             }
@@ -53,7 +55,7 @@ namespace Configuratively
 
         private static string GetIdFromFileInfo(FileInfo fileInfo, string basePath)
         {
-            return fileInfo.FullName.Replace(basePath, "").Replace(@"\", "/");
+            return fileInfo.FullName.Replace(basePath, string.Empty).Replace(@"\", "/");
         }
 
 
