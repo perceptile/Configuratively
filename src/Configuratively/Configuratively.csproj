@@ -47,6 +47,9 @@
     <Reference Include="Nancy.Hosting.Wcf">
       <HintPath>..\packages\Nancy.Hosting.Wcf.1.1\lib\net40\Nancy.Hosting.Wcf.dll</HintPath>
     </Reference>
+    <Reference Include="PowerArgs">
+      <HintPath>..\packages\PowerArgs.2.6.0.1\lib\net40\PowerArgs.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />

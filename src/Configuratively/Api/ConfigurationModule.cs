@@ -16,13 +16,25 @@ namespace Configuratively.Api
             JsonSettings.MaxJsonLength = 5000000;
             JsonSettings.RetainCasing = true;
 
+            var routes = GetConfigurationRoutes();
+
+            foreach (var route in routes)
+            {
+                Get[route.Key] = _ => Response.AsJson((ExpandoObject)route.Value);
+            }
+        }
+
+        public static Dictionary<string, dynamic> GetConfigurationRoutes()
+        {
             var entities = (new MappingManager()).Entities;
             var hostUri = ConfigurationManager.AppSettings["hostUri"];
 
             // Generate the root endpoint
             var resources = entities.Keys.Select(k => string.Format("{0}/{1}", hostUri, k)).ToArray();
-            Get["/"] = _ =>
-                Response.AsJson(new {resources });
+
+            Dictionary<string, dynamic> routes = new Dictionary<string, dynamic>();
+
+            routes["/"] = new {resources};
 
             // Generate an endpoint for each entity
             foreach (var e in entities.Keys)
@@ -32,15 +44,14 @@ namespace Configuratively.Api
                 var items = InMemoryRepository.Get(e) as IEnumerable<dynamic>;
                 ret.Add(e, items);
 
-                Get[url] = _ =>
-                    Response.AsJson(ret);
+                routes[url] = ret;
 
                 foreach (var item in items)
                 {
-                    Get[(string)item._route] = _ =>
-                        Response.AsJson((ExpandoObject)item);
+                    routes[item._route] = item;
                 }
             }
+            return routes;
         }
     }
 }
