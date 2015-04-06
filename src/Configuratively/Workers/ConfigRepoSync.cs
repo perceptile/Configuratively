@@ -45,7 +45,7 @@ namespace Configuratively.Workers
                         var entities = (new Domain.MappingManager()).Entities;
                         foreach(var e in entities.Keys)
                         {
-                            IEnumerable<dynamic> envs = dr.Repo.Where(i => Regex.Match(i._id.ToString(), e).Success == true).ToList();
+                            IEnumerable<dynamic> envs = dr.Repo.Where(i => Regex.Match(i._id.ToString(), entities[e]).Success == true).ToList();
                             InMemoryRepository.Persist(e, envs);
                         }
 
