@@ -1,0 +1,12 @@
+{
+	"links": [
+		"templates/environment/test.json"
+	],
+
+	"name": "test",
+	"description": "test environment",
+
+    "settings": {
+        "bar":  "foo-test"
+    }
+}
