@@ -46,26 +46,37 @@ namespace Configuratively.Api
 
                         // Perform each query against the relevant entity from the InMemory cache
                         // and construct the response object
-                        var response = new List<dynamic>();
+                        var responseObjects = new List<dynamic>();
                         foreach (var queryParameter in queryParameters.Keys)
                         {
-                            var queryResults = new List<dynamic>();
+                            var queryValue = queryParameters[queryParameter];
+                            var queryResult = InMemoryRepository.Get(queryParameter) as IEnumerable<dynamic>;
+                            var result = queryResult.FirstOrDefault(i => i.name == queryValue);
 
-                            var queryValues = queryParameters[queryParameter].Split(',');
-                            foreach (var queryValue in queryValues)
+                            if (result == null)
                             {
-                                var queryResult = InMemoryRepository.Get(queryParameter) as IEnumerable<dynamic>;
-                                var filteredResult = queryResult.Where(i => i.name == queryValue);
-                                queryResults.Add(filteredResult);
+                                return HttpStatusCode.NotFound;
+                            }
+                            responseObjects.Add(result);
+                        }
+
+                        // Merge the entities that have been queried into a single object.
+                        // Child URI segments have greater merge precedence than their parent
+                        if (responseObjects.Count >= 2)
+                        {
+                            // a query must have at least 2 referenced entities
+                            dynamic response = DynamicMerge.DoMerge(responseObjects[1], responseObjects[0]);
+
+                            // merge any remaining entity query results
+                            for (int i=2; i < responseObjects.Count; i++)
+                            {
+                                response = DynamicMerge.DoMerge(responseObjects[i], response);
                             }
 
-                            // nest the results under a key that relates to the entity being queried
-                            var wrapper = new ExpandoObject();
-                            Dynamitey.Dynamic.InvokeSet(wrapper, queryParameter, queryResults);
-                            response.Add(wrapper);
+                            return Response.AsJson((ExpandoObject)response);
                         }
-                        return response;
-                        // return Response.AsJson((ExpandoObject)DynamicMerge.DoMerge(child.Value, parent.Value));
+
+                        return HttpStatusCode.BadRequest;
                     };
                 }
             }
