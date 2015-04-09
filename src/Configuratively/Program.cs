@@ -46,15 +46,16 @@ namespace Configuratively
         [ArgActionMethod, ArgDescription("Exports the configuration resource to a specified file.")]
         public void Export(
             [ArgRequired]
+            [ArgExistingDirectory]
             [ArgDescription("The path to the configuration repository.")]string repositoryPath, 
             [ArgRequired]
             [ArgDescription("The route to the configuration resource.")]string route, 
             [ArgRequired]
             [ArgDescription("The relative filepath to save the resource to.")]string path)
         {
-            new ConfigRepoSync().Synchronise(repositoryPath);
+            var settings = new ConfigSettings(repositoryPath);
 
-            var browser = new Browser(new AnonymousBootstrapper());
+            var browser = new Browser(new AnonymousBootstrapper(true, settings));
             var result = browser.Get(route);
 
             var jsonReader = new JsonReader();

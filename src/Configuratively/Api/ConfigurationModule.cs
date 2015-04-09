@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Configuratively.Domain;
+using Configuratively.Hosting;
 using Configuratively.Repositories;
 using Nancy;
 using Nancy.Json;
@@ -12,10 +13,12 @@ namespace Configuratively.Api
 {
     public class ConfigurationModule : NancyModule
     {
+        private readonly ConfigSettings _settings;
         private static Dictionary<string, IEnumerable<string>> _queryEndpoints;
 
-        public ConfigurationModule()
+        public ConfigurationModule(ConfigSettings settings)
         {
+            _settings = settings;
             JsonSettings.MaxJsonLength = 5000000;
             JsonSettings.RetainCasing = true;
 
@@ -27,7 +30,7 @@ namespace Configuratively.Api
             }
 
             // Define query endpoints
-            var queries = (new MappingManager()).Queries;
+            var queries = (new MappingManager(_settings)).Queries;
             foreach (var q in queries)
             {
                 if (!string.IsNullOrEmpty(q.UriTemplate))
@@ -82,10 +85,10 @@ namespace Configuratively.Api
             }
         }
 
-        public static Dictionary<string, dynamic> GetConfigurationRoutes()
+        public Dictionary<string, dynamic> GetConfigurationRoutes()
         {
-            var mappingModel = new MappingManager();
-            var hostUri = ConfigurationManager.AppSettings["hostUri"];
+            var mappingModel = new MappingManager(_settings);
+            var hostUri = _settings.HostUri;
 
             _queryEndpoints = new Dictionary<string, IEnumerable<string>>();
 

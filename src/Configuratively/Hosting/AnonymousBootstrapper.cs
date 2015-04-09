@@ -1,16 +1,26 @@
 ﻿//using Asos.Alm.ConfigurationRepository.Background;
+
+using System.Configuration;
+using System.IO;
+using Configuratively.Workers;
+using log4net;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
-using log4net;
-
-using Configuratively.Infrastructure;
-using Configuratively.Workers;
+using LogManager = Configuratively.Infrastructure.LogManager;
 
 namespace Configuratively.Hosting
 {
     public class AnonymousBootstrapper : DefaultNancyBootstrapper
     {
+        private readonly bool _synchronise;
+        private readonly ConfigSettings _settings;
+        public AnonymousBootstrapper(bool synchronise, ConfigSettings settings)
+        {
+            _synchronise = synchronise;
+            _settings = settings;
+        }
+
         protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
         {
             pipelines.OnError.AddItemToEndOfPipeline((nancyContext, exception) =>
@@ -23,10 +33,18 @@ namespace Configuratively.Hosting
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            container.Register(Infrastructure.LogManager.Logger);
-
+            container.Register(_settings);
+            container.Register(LogManager.Logger);
             container.Register<ConfigRepoSync>().AsSingleton();
-            container.Resolve<ConfigRepoSync>().Start();
+            
+            if (_synchronise)
+            {
+                container.Resolve<ConfigRepoSync>().Synchronise();
+            }
+            else
+            {
+                container.Resolve<ConfigRepoSync>().Start();
+            }
 
             pipelines.OnError.AddItemToEndOfPipeline((nancyContext, exception) =>
             {              
@@ -41,4 +59,25 @@ namespace Configuratively.Hosting
             base.ApplicationStartup(container, pipelines);
         }
     }
+
+    public class ConfigSettings 
+    {
+        public ConfigSettings() : this(ConfigurationManager.AppSettings["repoPath"])
+        {
+        }
+
+        public ConfigSettings(string repositoryPath)
+        {
+            RepositoryPath = Path.GetFullPath(repositoryPath);
+            HostUri = ConfigurationManager.AppSettings["hostUri"];
+            MappingFile = ConfigurationManager.AppSettings["mappingFile"];
+            ServiceUri = ConfigurationManager.AppSettings["ClientSettingsProvider.ServiceUri"];
+        }
+
+        public string HostUri { get; set; }
+        public string RepositoryPath { get; set; }
+        public string MappingFile { get; set; }
+        public string ServiceUri { get; set; }
+    }
+
 }

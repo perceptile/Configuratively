@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using Configuratively.Domain;
+using Configuratively.Hosting;
 using Configuratively.Infrastructure;
 using Configuratively.Repositories;
 
@@ -13,36 +14,40 @@ namespace Configuratively.Workers
 {
     internal class ConfigRepoSync : IDisposable
     {
+        private readonly ConfigSettings _settings;
         private IDisposable _disposable;
         private const int IntervalInSeconds = 30;
+
+        public ConfigRepoSync(ConfigSettings settings)
+        {
+            _settings = settings;
+        }
 
         public void Start()
         {
             _disposable = Observable
                 .Interval(TimeSpan.FromSeconds(IntervalInSeconds))
                 .StartWith(0)
-                .Subscribe(l => Synchronise(ConfigurationManager.AppSettings["repoPath"]), e => LogManager.Logger.Error(e));
+                .Subscribe(l => Synchronise(), e => LogManager.Logger.Error(e));
         }
 
-        public void Synchronise(string repositoryPath)
+        public void Synchronise()
         {
             try
             {
-                var repositoryFullPath = Path.GetFullPath(repositoryPath);
-
                 // Process the source config repo files
-                var crInfo = Directory.GetFiles(repositoryFullPath, "*.json", SearchOption.AllDirectories);
+                var crInfo = Directory.GetFiles(_settings.RepositoryPath, "*.json", SearchOption.AllDirectories);
 
                 // Clear-down the cache before updating it (so any deletions are honoured)
                 //InMemoryRepository.ClearStandByCache();
 
                 // Process the json files
-                var dr = new DynamicRepository(repositoryFullPath);
-                var jsonDocuments = Helpers.ReadAllJsonFiles(crInfo, repositoryFullPath, "");
+                var dr = new DynamicRepository(_settings.RepositoryPath);
+                var jsonDocuments = Helpers.ReadAllJsonFiles(crInfo, _settings.RepositoryPath, "");
                 dr.ProcessAllLinks(jsonDocuments);
 
                 // Construct our dynamic query taxonomy
-                var entities = (new MappingManager()).Entities;
+                var entities = (new MappingManager(_settings)).Entities;
                 foreach (var e in entities)
                 {
                     // Simple map

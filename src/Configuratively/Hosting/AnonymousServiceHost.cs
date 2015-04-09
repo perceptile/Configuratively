@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using Nancy.Hosting.Wcf;
@@ -10,8 +9,10 @@ namespace Configuratively.Hosting
     {
         public static void Create()
         {
-            var anonHost = new WebServiceHost(new NancyWcfGenericService(new AnonymousBootstrapper()), new Uri(ConfigurationManager.AppSettings["hostUri"]));
-            anonHost.AddServiceEndpoint(typeof (NancyWcfGenericService), new WebHttpBinding(), "");
+            var settings = new ConfigSettings();
+
+            var anonHost = new WebServiceHost(new NancyWcfGenericService(new AnonymousBootstrapper(false, settings)), new Uri(settings.HostUri));
+            anonHost.AddServiceEndpoint(typeof (NancyWcfGenericService), new WebHttpBinding(), string.Empty);
             anonHost.Open();
         }
     }
