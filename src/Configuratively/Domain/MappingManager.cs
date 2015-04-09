@@ -2,16 +2,22 @@
 using System.Configuration;
 using System.IO;
 using System.Text;
-using JsonFx.Json;
+using Newtonsoft.Json;
 
 namespace Configuratively.Domain
 {
     public class MappingManager
     {
-        public IDictionary<string, string> Entities
+        private ConfigurationModel _model { get; set; }
+
+        public List<ConfigurationEntity> Entities
         {
-            get;
-            private set;
+            get { return _model.Entities; }
+        }
+
+        public List<ConfigurationQuery> Queries
+        {
+            get { return _model.Queries; }
         }
 
         public MappingManager()
@@ -19,13 +25,7 @@ namespace Configuratively.Domain
             var repoPath = Path.GetFullPath(ConfigurationManager.AppSettings["repoPath"]);
             var mappingFile = Path.Combine(repoPath, ConfigurationManager.AppSettings["mappingFile"]);
 
-            var jr = new JsonReader();
-            dynamic mappings = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(mappingFile)));
-            Entities = new Dictionary<string, string>();
-            foreach (var m in mappings)
-            {
-                Entities.Add(m.Key, m.Value);
-            }
+            _model = JsonConvert.DeserializeObject<ConfigurationModel>(Encoding.ASCII.GetString(File.ReadAllBytes(mappingFile)));
         }
     }
 }

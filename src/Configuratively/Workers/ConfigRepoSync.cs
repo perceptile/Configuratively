@@ -43,13 +43,13 @@ namespace Configuratively.Workers
 
                 // Construct our dynamic query taxonomy
                 var entities = (new MappingManager()).Entities;
-                foreach (var e in entities.Keys)
+                foreach (var e in entities)
                 {
                     // Simple map
-                    if (!string.IsNullOrEmpty(entities[e]))
+                    if (!string.IsNullOrEmpty(e.Regex))
                     {
-                        IEnumerable<dynamic> items = dr.Repo.Where(i => Regex.IsMatch(i._id.ToString(), entities[e])).ToList();
-                        InMemoryRepository.Persist(e, items);
+                        IEnumerable<dynamic> items = dr.Repo.Where(i => Regex.IsMatch(i._id.ToString(), e.Regex)).ToList();
+                        InMemoryRepository.Persist(e.Name, items);
                     }
                 }
 

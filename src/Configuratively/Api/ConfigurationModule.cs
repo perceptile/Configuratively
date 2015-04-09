@@ -35,15 +35,15 @@ namespace Configuratively.Api
             };
 
             // Define query endpoints
-            var entities = (new MappingManager()).Entities;
-            foreach (var e in entities.Keys)
+            var queries = (new MappingManager()).Queries;
+            foreach (var q in queries)
             {
-                if (string.IsNullOrEmpty(entities[e]))
+                if (!string.IsNullOrEmpty(q.UriTemplate))
                 {
-                    Get[e] = _ =>
+                    Get[q.UriTemplate] = _ =>
                     {
                         // retrieve the cached entity names associated with query
-                        var queryEntities = _queryEndpoints[e];
+                        var queryEntities = _queryEndpoints[q.UriTemplate];
 
                         // build up the set of query parameters (and their respective values)
                         var queryParameters = new Dictionary<string, string>();
@@ -73,6 +73,7 @@ namespace Configuratively.Api
                             response.Add(wrapper);
                         }
                         return response;
+                        // return Response.AsJson((ExpandoObject)DynamicMerge.DoMerge(child.Value, parent.Value));
                     };
                 }
             }
@@ -80,28 +81,27 @@ namespace Configuratively.Api
 
         public static Dictionary<string, dynamic> GetConfigurationRoutes()
         {
-            var entities = (new MappingManager()).Entities;
+            var mappingModel = new MappingManager();
             var hostUri = ConfigurationManager.AppSettings["hostUri"];
 
             _queryEndpoints = new Dictionary<string, IEnumerable<string>>();
 
             // Generate the root endpoint
-            var resources = entities.Keys.Select(k => string.Format("{0}/{1}", hostUri, k)).ToArray();
+            var resources = mappingModel.Entities.Select(e => string.Format("{0}/{1}", hostUri, e.Name)).ToArray();
 
             Dictionary<string, dynamic> routes = new Dictionary<string, dynamic>();
 
             routes["/"] = new {resources};
 
             // Generate an endpoint for each entity
-            foreach (var e in entities.Keys)
+            foreach (var e in mappingModel.Entities)
             {
-                // Only process simple mappings
-                if (!string.IsNullOrEmpty(entities[e]))
+                if (!string.IsNullOrEmpty(e.Regex))
                 {
-                    var url = string.Format("/{0}", e);
+                    var url = string.Format("/{0}", e.Name);
                     IDictionary<string, object> ret = new ExpandoObject();
-                    var items = InMemoryRepository.Get(e) as IEnumerable<dynamic>;
-                    ret.Add(e, items);
+                    var items = InMemoryRepository.Get(e.Name) as IEnumerable<dynamic>;
+                    ret.Add(e.Name, items);
 
                     // Generate an endpoint for the entity collection
                 	routes[url] = ret;
@@ -112,19 +112,24 @@ namespace Configuratively.Api
                         routes[item._route] = item;
                     }
                 }
-                else
+            }
+
+            // Process the queries
+            foreach (var q in mappingModel.Queries)
+            {
+                if (!string.IsNullOrEmpty(q.UriTemplate))
                 {
                     // Generate the query endpoints (these reference mapped entities)
                     
                     // extract the uri tokens from the query URI and translate them into entity names
-                    var uriTokens = Regex.Matches(e, @"\{.*?\}");
+                    var uriTokens = Regex.Matches(q.UriTemplate, @"\{.*?\}");
                     var queryFields = new List<string>();
                     foreach (var s in uriTokens)
                     {
                         queryFields.Add(s.ToString().Replace("{","").Replace("}",""));
                     }
                     // cache the ordered entity names for the current query
-                    _queryEndpoints.Add(e, queryFields);
+                    _queryEndpoints.Add(q.UriTemplate, queryFields);
                 }
             }
             return routes;
