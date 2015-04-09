@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,6 +59,10 @@ namespace Configuratively
             return fileInfo.FullName.Replace(basePath, string.Empty).Replace(@"\", "/");
         }
 
-
+        public static bool HasProperty(dynamic obj, string name)
+        {
+            var entry = (ExpandoObject)obj;
+            return entry.Any(x => x.Key == name);
+        }
     }
 }

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamitey;
-
-using MemoryCache = System.Runtime.Caching.MemoryCache;
 
 namespace Configuratively.Domain
 {
@@ -90,19 +85,9 @@ namespace Configuratively.Domain
         }
         private dynamic ResolveLinks(dynamic entry, bool isRecursionRoot = true)
         {
-            bool hasLinks = false;
             if (!entry._isLinksResolved)
             {
-                try
-                {
-                    // If the 'links' property does not exist then we'll get an exception
-                    hasLinks = (entry.links != null && entry.links.Length > 0);
-                }
-                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                {
-                }
-
-                if (hasLinks)
+                if (Helpers.HasProperty(entry, "links") && entry.links != null && entry.links.Length > 0)
                 {
                     entry = ResolveLinks(entry, entry.links, isRecursionRoot);
                 }
