@@ -52,7 +52,7 @@ namespace Configuratively.Hosting
                 return HttpStatusCode.InternalServerError;
             });
 
-            pipelines.AfterRequest += (ctx) => ctx.Response
+            pipelines.AfterRequest += ctx => ctx.Response
                 .WithHeader("Access-Control-Allow-Origin", "*")
                 .WithHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
