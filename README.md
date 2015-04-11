@@ -10,4 +10,11 @@ Configuratively is written in C# and runs on the .NET platform but with an aim t
 
 ## Getting Started
 
-Both the web service and command-line interfaces are bundled within the same application for simplicity. 
+Both the web service and command-line interfaces are bundled within the same application for simplicity. To start using Configuratively:
+
+1. Download the [latest release](https://github.com/perceptile/Configuratively/releases/latest).
+2. Use the [example](https://github.com/perceptile/Configuratively/tree/master/_testRepo/classic-scenario) to create your own configuration repository.
+3. Run the `configuratively.exe` without parameters to host the webserver which defaults to `http://localhost:9000`.
+4. Use the `export` argument from the command-line to compile your configuration to a JSON file.
+ 
+*When using the web server you can change the host uri and configuration folder location within `configuratively.exe.config`*.
