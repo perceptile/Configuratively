@@ -1,6 +1,4 @@
-﻿//using Asos.Alm.ConfigurationRepository.Background;
-
-using System.Configuration;
+﻿using System.Configuration;
 using System.IO;
 using Configuratively.Workers;
 using log4net;
@@ -71,13 +69,12 @@ namespace Configuratively.Hosting
             RepositoryPath = Path.GetFullPath(repositoryPath);
             HostUri = ConfigurationManager.AppSettings["hostUri"];
             MappingFile = ConfigurationManager.AppSettings["mappingFile"];
-            ServiceUri = ConfigurationManager.AppSettings["ClientSettingsProvider.ServiceUri"];
+            
         }
 
         public string HostUri { get; set; }
         public string RepositoryPath { get; set; }
         public string MappingFile { get; set; }
-        public string ServiceUri { get; set; }
     }
 
 }
