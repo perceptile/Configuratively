@@ -6,7 +6,7 @@ Configuratively is a file based database for storing your environment and applic
 * RESTful API and Command-Line interfaces for retreiving configuration.
 * Mapped queries to model hierarchies to override configuration values.
 
-Configuratively is written in C# and runs on the .NET platform but with an aim to work with [http://www.mono-project.com/](Mono) for cross-platform availability.
+Configuratively is written in C# and runs on the .NET platform but with an aim to work with [coreclr](https://github.com/dotnet/coreclr) for cross-platform availability.
 
 ## Getting Started
 
