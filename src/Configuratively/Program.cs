@@ -4,6 +4,7 @@ using Configuratively.Hosting;
 using Configuratively.Workers;
 using JsonFx.Json;
 using JsonFx.Serialization;
+using Nancy;
 using Nancy.Testing;
 using PowerArgs;
 using Topshelf;
@@ -71,14 +72,23 @@ namespace Configuratively
 
                 var result = browser.Get(route);
 
+                if (result.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("The route: {0} does not exist.{1}", route, Environment.NewLine);
+                    Console.ResetColor();
+                    Environment.Exit(1);
+                }
+
                 var jsonReader = new JsonReader();
                 dynamic jsonObject = jsonReader.Read(result.Body.AsString());
 
                 if (Helpers.HasProperty(jsonObject, "_errors"))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("The configuration repository has errors for this route." + Environment.NewLine);
+                    Console.ResetColor();
                     Console.WriteLine(string.Join(Environment.NewLine, jsonObject._errors) + Environment.NewLine);
-
                     Environment.Exit(1);
                 }
 
@@ -88,8 +98,6 @@ namespace Configuratively
                     writer.Write(jsonObject, stream);
                 }
             }
-                
-            
         }
     }
 }
