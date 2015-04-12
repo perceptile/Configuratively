@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Configuratively.Hosting;
 using Configuratively.Workers;
 using JsonFx.Json;
@@ -59,7 +60,15 @@ namespace Configuratively
             var result = browser.Get(route);
 
             var jsonReader = new JsonReader();
-            var jsonObject = jsonReader.Read(result.Body.AsString());
+            dynamic jsonObject = jsonReader.Read(result.Body.AsString());
+
+            if (Helpers.HasProperty(jsonObject, "_errors"))
+            {
+                Console.WriteLine("The configuration repository has errors for this route." + Environment.NewLine);
+                Console.WriteLine(string.Join(Environment.NewLine, jsonObject._errors) + Environment.NewLine);
+
+                Environment.Exit(1);
+            }
 
             using (var stream = new StreamWriter(path))
             {

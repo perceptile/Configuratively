@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using JsonFx.Json;
+using JsonFx.Serialization;
 
 namespace Configuratively
 {
@@ -32,26 +33,26 @@ namespace Configuratively
 
         private static dynamic GetDynamicWithRouteFromJson(FileInfo fileInfo, string basePath)
         {
+            var jr = new JsonReader();
+            dynamic obj;
+
             try
             {
-                var jr = new JsonReader();
-                dynamic obj = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(fileInfo.FullName)));
-
-                // generate an identifier
-                obj._id = GetIdFromFileInfo(fileInfo, basePath);
-                obj._isLinksResolved = false;
-
-                obj._route = obj._id.Replace(fileInfo.Extension, string.Empty);
-
-                return obj;
+                obj = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(fileInfo.FullName)));
             }
-            catch (Exception e)
+            catch (DeserializationException e)
             {
-                return new
-                {
-                    error = e.ToString()
-                };
+                obj = new ExpandoObject();
+                obj._error = string.Format("{0} {{{1},{2}}} at {3}", e.Message, e.Line, e.Column, fileInfo.FullName);
             }
+
+            // generate an identifier
+            obj._id = GetIdFromFileInfo(fileInfo, basePath);
+            obj._isLinksResolved = false;
+
+            obj._route = obj._id.Replace(fileInfo.Extension, string.Empty);
+
+            return obj;
         }
 
         private static string GetIdFromFileInfo(FileInfo fileInfo, string basePath)

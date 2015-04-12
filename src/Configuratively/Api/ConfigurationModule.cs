@@ -53,6 +53,11 @@ namespace Configuratively.Api
                         {
                             var queryValue = queryParameters[queryParameter];
                             var queryResult = InMemoryRepository.Get(queryParameter) as IEnumerable<dynamic>;
+
+                            var errors = queryResult.Where(o => Helpers.HasProperty(o, "_error")).Select(o => o._error).ToList();
+                            if (errors.Any())
+                                return Response.AsJson(new {_errors = errors});
+
                             var result = queryResult.FirstOrDefault(i => i.name == queryValue);
 
                             if (result == null)
