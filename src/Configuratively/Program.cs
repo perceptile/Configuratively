@@ -50,31 +50,46 @@ namespace Configuratively
             [ArgExistingDirectory]
             [ArgDescription("The path to the configuration repository.")]string repositoryPath, 
             [ArgRequired]
-            [ArgDescription("The route to the configuration resource.")]string route, 
-            [ArgRequired]
-            [ArgDescription("The relative filepath to save the resource to.")]string path)
+            [ArgDescription("The route to generate to the specified file in the form route=outputpath.")]string[] routes)
         {
             var settings = new ConfigSettings(repositoryPath);
 
             var browser = new Browser(new AnonymousBootstrapper(true, settings));
-            var result = browser.Get(route);
 
-            var jsonReader = new JsonReader();
-            dynamic jsonObject = jsonReader.Read(result.Body.AsString());
-
-            if (Helpers.HasProperty(jsonObject, "_errors"))
+            foreach (var routeFilePair in routes)
             {
-                Console.WriteLine("The configuration repository has errors for this route." + Environment.NewLine);
-                Console.WriteLine(string.Join(Environment.NewLine, jsonObject._errors) + Environment.NewLine);
+                var split = routeFilePair.Split('=');
 
-                Environment.Exit(1);
-            }
+                if (split.Length != 2)
+                {
+                    Console.WriteLine("Routes parameter is not correct. Please use the format route1=outputPath1,route2=outputPath2.");
+                    Environment.Exit(2);
+                }
 
-            using (var stream = new StreamWriter(path))
-            {
-                var writer = new JsonWriter(new DataWriterSettings{PrettyPrint = true});
-                writer.Write(jsonObject, stream);
+                var route = split[0];
+                var path = split[1];
+
+                var result = browser.Get(route);
+
+                var jsonReader = new JsonReader();
+                dynamic jsonObject = jsonReader.Read(result.Body.AsString());
+
+                if (Helpers.HasProperty(jsonObject, "_errors"))
+                {
+                    Console.WriteLine("The configuration repository has errors for this route." + Environment.NewLine);
+                    Console.WriteLine(string.Join(Environment.NewLine, jsonObject._errors) + Environment.NewLine);
+
+                    Environment.Exit(1);
+                }
+
+                using (var stream = new StreamWriter(path))
+                {
+                    var writer = new JsonWriter(new DataWriterSettings { PrettyPrint = true });
+                    writer.Write(jsonObject, stream);
+                }
             }
+                
+            
         }
     }
 }
