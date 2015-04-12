@@ -5,11 +5,8 @@
 		[Parameter(Mandatory=$true)]
 		[string]$repositoryPath,
 		[Parameter(ParameterSetName="export",Mandatory=$true)]
-		[string]$route,
-		[Parameter(ParameterSetName="export",Mandatory=$true)]
-		[string]$outputPath
+		[string]$routes
 	)
 
-	& $PSScriptRoot\Configuratively.exe export $repositoryPath $route $outputPath
-
+	& $PSScriptRoot\Configuratively.exe export $repositoryPath $routes
 }
