@@ -76,9 +76,11 @@ Now lets add configuration files for a test environment, a web package and a ser
 > $result = Get-Configuration -repositoryPath C:\simplerepo -routes '/environments/test'
 > $result.settings.debug
 false
+
 > $result = Get-Configuration -repositoryPath C:\simplerepo -routes '/test/service'
 > $result.settings.debug
 false
+
 > $result = Get-Configuration -repositoryPath C:\simplerepo -routes '/test/web'
 > $result.settings.debug
 true
@@ -108,3 +110,51 @@ You can specify multiple parents for a configuration file to build complex domai
 ```
 
 Now calling the route `/environment/service` will return a debug value of true. We could add default as a link to the web.json and reduce the duplication within there too.
+
+## Hosting your configuration as a service
+
+We use the wonderful [Nancy](http://nancyfx.org/) framework to service configuration using HTTP. In addition we use [topshelf](http://topshelf-project.com/) as a container which will allow you to run it either as a console application or as a windows service. The command line reference for the executable can be found on their [wiki](http://docs.topshelf-project.com/en/latest/overview/commandline.html). We'll cover the basics here.
+
+#### Running from command line
+
+    configuratively.exe run 
+
+#### Running as a windows service with default credentials
+
+    configuratively.exe install
+    
+#### Running from command line under a specific user
+
+    configuratively.exe run -username safeuser -password safepassword
+    
+You can configure the location of the configuration repository, mapping file and http endpoint by editing `configuratively.exe.config`. 
+
+```xml
+<appSettings>
+  <add key="hostUri" value="http://localhost:9000" />
+  <add key="repoPath" value="C:\classic-scenario"/>
+  <add key="mappingFile" value="simple-mapping.cfg" />
+</appSettings>
+```
+
+## Generating configuration files using the Command-Line 
+
+If you want to pre-generate the configuration files to support a custom method of delivery to your applications you can do that too. The same `configuratively.exe` has a built in command-line generator and comes bundled with a powershell module.
+
+Routes are described using a comma separated list in the form of `route1=output1.json,route2=output2.json` and you can generate as many as you like. When generating a lot of configuration its better to send multiple routes in at the same time to save on the executables start-up time.
+
+    > Save-Configuration -repositoryPath C:\repository -routes "test/web=web.json,/environments/test=test.json"
+    web.json
+    test.json
+    
+## Contributing
+
+We use and develop Configuratively for our own use, but we would love to help make it work for you too.
+
+* Submit a pull request for a new feature or bugfix.
+* Submit a failing test for a bug.
+* Make a feature request by raising an issue.
+* Let us know about any bugs.
+* Tell us how you're using Configuratively!
+
+You can reach us [@naeemkhedarun](https://twitter.com/naeemkhedarun) and [@James_Dawson](https://twitter.com/James_Dawson).
