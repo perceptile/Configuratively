@@ -137,6 +137,14 @@ You can configure the location of the configuration repository, mapping file and
 </appSettings>
 ```
 
+Once the service is running you get the JSON configuration over HTTP. The endpoints covering the simple example are:
+
+    GET http://localhost:9000/environments/test
+    
+    GET http://localhost:9000/packages/service
+    
+    GET http://localhost:9000/test/web
+
 ## Generating configuration files using the Command-Line 
 
 If you want to pre-generate the configuration files to support a custom method of delivery to your applications you can do that too. The same `configuratively.exe` has a built in command-line generator and comes bundled with a powershell module.
