@@ -143,7 +143,7 @@ If you want to pre-generate the configuration files to support a custom method o
 
 Routes are described using a comma separated list in the form of `route1=output1.json,route2=output2.json` and you can generate as many as you like. When generating a lot of configuration its better to send multiple routes in at the same time to save on the executables start-up time.
 
-    > Save-Configuration -repositoryPath C:\repository -routes "test/web=web.json,/environments/test=test.json"
+    > Save-Configuration -repositoryPath C:\repository -routes "test/web=web.json,environments/test=test.json"
     web.json
     test.json
     
