@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Configuratively</id>
+    <version>0.1.0</version>
+    <title>Configuratively</title>
+    <authors>James Dawson, Naeem Khedarun</authors>
+    <owners>James Dawson, Naeem Khedarun</owners>
+    <projectUrl>https://github.com/perceptile/Configuratively</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Configuratively is a file based database for storing your environment and application configuration.</description>
+    <copyright>Copyright 2015</copyright>
+    <tags>Configuration Environment JSON Repository Deployment Continuous Integration</tags>
+  </metadata>
+  <files>
+    <file src="..\src\Configuratively\bin\Release\*.dll" target="tools" />
+    <file src="..\src\Configuratively\bin\Release\*.exe" target="tools" />
+    <!-- <file src="init.ps1" target="tools\init.ps1" /> -->
+  </files>
+</package>
