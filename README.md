@@ -1,4 +1,6 @@
-# Configuratively
+# Configuratively 
+
+[![Build status](https://ci.appveyor.com/api/projects/status/mgcx695ybu7fr8ey?svg=true)](https://ci.appveyor.com/project/perceptile/configuratively)
 
 Configuratively is a file based database for storing your environment and application configuration. It is easy to get started and supports a variety of use cases to fit your project.
 
