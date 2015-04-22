@@ -1,0 +1,32 @@
+{
+    "links": [
+        "defaults.json"
+    ],
+
+    "settings": {
+        "memoryGb": 8,
+        "roles": [
+            "sql"
+        ],
+        "drives": [
+            {
+                "name": "SWAP",
+                "sizeGb": 20
+            },
+            {
+                "name": "DATA",
+                "sizeGb": 500
+            }
+        ],
+        "certThumbprint": "0a52e0c3b55f4dfef40f5737120e604dbfecf947"
+    },
+    "applications": [
+        {
+            "name": "notepad++",
+            "options": {
+                "installPath": "D:\\NotepadPlusPlus",
+                "theme": "dark"
+            }
+        }
+    ]
+}

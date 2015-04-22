@@ -1,0 +1,23 @@
+{
+    "links": [
+        "core.json"
+    ],
+
+    "settings": {
+        "numCores": 2,
+        "memoryGb": 4,
+        "roles": [
+            "common"
+        ],
+        "drives": [
+            {
+                "name": "OS",
+                "sizeGb": 40
+            },
+            {
+                "name": "SWAP",
+                "sizeGb": 10
+            }
+        ]
+    }
+}

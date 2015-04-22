@@ -53,15 +53,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="_testdata\set1\environments\dev01.json" />
-    <None Include="_testdata\set1\environments\test01.json" />
-    <None Include="_testdata\set1\templates\environment\test.json" />
-    <None Include="_testdata\set1\templates\network\dev01-app-vlan.json" />
-    <None Include="_testdata\set1\templates\network\admin.json" />
-    <None Include="_testdata\set1\templates\server\dev01-app-vlan.json" />
-    <None Include="_testdata\set1\templates\server\app.json" />
-    <None Include="_testdata\set2\bad1.json" />
-    <None Include="_testdata\set2\bad2.json" />
+    <None Include="_testdata\scenario2\bad1.json" />
+    <None Include="_testdata\scenario2\bad2.json" />
+    <None Include="_testdata\scenario1\core.json" />
+    <None Include="_testdata\scenario1\defaults.json" />
+    <None Include="_testdata\scenario1\root.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Configuratively\Configuratively.csproj">

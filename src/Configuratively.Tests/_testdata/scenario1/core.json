@@ -1,0 +1,14 @@
+{
+    "settings": {
+        "usesCertificate": true
+    },
+    "applications": [
+        {
+            "name": "notepad++",
+            "options": {
+                "installPath": "C:\\Program Files\\Notepad++",
+                "installType": "Full"
+            }
+        }
+    ]
+}

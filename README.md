@@ -40,7 +40,7 @@ Configuratively has two main components: JSON files which live within a file sys
 
 *Entities* relate to the domain model of your configuration, and they map a virtual name to a physical location using a regex expression. This gives you flexiblity about how you want to structure your model. Configuratively will automatically allow you to reach entities based on this configuration using convention based routes. For example an environment config located at `/environments/test.json` will be accessible via the route `/environments/test`. We will cover routes later on.
 
-*Queries* allow you to specify cross cutting hierachies against your model. The uriTemplate is actually a dynamic route which lets you override configuration values using a *last entity* windows. Given the route `/test/web` any settings in _web_ will override settings with the same name in _test_. Using these uriTemplates you can fit your deployment models without physically changing the repository.
+*Queries* allow you to specify cross cutting hierachies against your model. The uriTemplate is actually a dynamic route which lets you override configuration values using a *last entity* wins. Given the route `/test/web` any settings in _web_ will override settings with the same name in _test_. Using these uriTemplates you can fit your deployment models without physically changing the repository.
 
 Now lets add configuration files for a test environment, a web package and a service package.
 
