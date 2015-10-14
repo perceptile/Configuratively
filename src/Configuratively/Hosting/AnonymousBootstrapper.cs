@@ -33,15 +33,16 @@ namespace Configuratively.Hosting
         {
             container.Register(_settings);
             container.Register(LogManager.Logger);
-            container.Register<ConfigRepoSync>().AsSingleton();
+            container.Register<DirectorySync>().AsSingleton();
+            container.Register<GitSync>().AsSingleton();
             
             if (_synchronise)
             {
-                container.Resolve<ConfigRepoSync>().Synchronise();
+                container.Resolve<GitSync>().Synchronise();
             }
             else
             {
-                container.Resolve<ConfigRepoSync>().Start();
+                container.Resolve<GitSync>().Start();
             }
 
             pipelines.OnError.AddItemToEndOfPipeline((nancyContext, exception) =>

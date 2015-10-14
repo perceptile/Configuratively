@@ -11,13 +11,13 @@ using Configuratively.Repositories;
 
 namespace Configuratively.Workers
 {
-    internal class ConfigRepoSync : IDisposable
+    internal class DirectorySync : IDisposable
     {
         private readonly ConfigSettings _settings;
         private IDisposable _disposable;
         private const int IntervalInSeconds = 30;
 
-        public ConfigRepoSync(ConfigSettings settings)
+        public DirectorySync(ConfigSettings settings)
         {
             _settings = settings;
         }
