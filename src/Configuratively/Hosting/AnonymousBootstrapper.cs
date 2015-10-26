@@ -69,7 +69,13 @@ namespace Configuratively.Hosting
             RepositoryPath = Path.GetFullPath(repositoryPath);
             HostUri = ConfigurationManager.AppSettings["hostUri"];
             MappingFile = ConfigurationManager.AppSettings["mappingFile"];
-            
+        }
+
+        public ConfigSettings(string repositoryPath, string hostUri, string mappingFile)
+        {
+            RepositoryPath = Path.GetFullPath(repositoryPath);
+            HostUri = hostUri;
+            MappingFile = mappingFile;
         }
 
         public string HostUri { get; set; }
