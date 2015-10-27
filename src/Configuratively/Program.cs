@@ -14,6 +14,8 @@ namespace Configuratively
     {
         private static void Main(string[] args)
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             if (args.Length == 0)
             {
                 HostFactory.Run(x =>

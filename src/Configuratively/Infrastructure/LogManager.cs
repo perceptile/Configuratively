@@ -8,10 +8,5 @@ namespace Configuratively.Infrastructure
         {
             get { return log4net.LogManager.GetLogger("default"); }
         }
-        
-        static LogManager()
-        {
-            log4net.Config.XmlConfigurator.Configure();
-        }
     }
 }
