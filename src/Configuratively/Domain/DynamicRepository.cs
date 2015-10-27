@@ -32,7 +32,7 @@ namespace Configuratively.Domain
             }
         }
 
-        public dynamic ResolveLinks(dynamic entry, IEnumerable<string> links, bool isRecursionRoot = true)
+        public dynamic ResolveLinks(dynamic entry, IEnumerable<String> links, bool isRecursionRoot = true)
         {
             // Reset the circular reference tracker if we are at the entry point of a new recursion stack
             if (isRecursionRoot)
@@ -62,8 +62,8 @@ namespace Configuratively.Domain
                     string linkEntryMemberName = linkEntry.Key;
                     if (!linkEntryMemberName.StartsWith("_") && linkEntryMemberName != "links")
                     {
-                        var entryMembers = ((IEnumerable<string>)Dynamic.GetMemberNames(entry, true)).
-                                                Where(m => !m.StartsWith("_"));
+                        var entryMembers = ((List<String>)Dynamic.GetMemberNames(entry, true))
+                                                                    .Where(m => !m.StartsWith("_"));
 
                         // If the base entry does not contain the current linked entry then just add it
                         if (!entryMembers.Contains(linkEntryMemberName))
@@ -87,9 +87,9 @@ namespace Configuratively.Domain
         {
             if (!entry._isLinksResolved)
             {
-                if (Helpers.HasProperty(entry, "links") && entry.links != null && entry.links.Length > 0)
+                if (Helpers.HasProperty(entry, "links") && entry.links != null && entry.links.Count > 0)
                 {
-                    entry = ResolveLinks(entry, entry.links, isRecursionRoot);
+                    entry = ResolveLinks(entry, ((List<Object>)entry.links).Cast<String>(), isRecursionRoot);
                 }
 
                 entry._isLinksResolved = true;

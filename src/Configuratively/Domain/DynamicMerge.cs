@@ -17,20 +17,22 @@ namespace Configuratively.Domain
         }
 
         #region Overloads to handle merging of mismatched collection types
-        private static dynamic Merge(ExpandoObject[] left, IEnumerable<ExpandoObject> right)
-        {
-            return Merge(left, right.ToArray());
-        }
 
         private static dynamic Merge(IEnumerable<ExpandoObject> left, IEnumerable<ExpandoObject> right)
         {
             return Merge(left.ToArray(), right.ToArray());
         }
 
-        private static dynamic Merge(IEnumerable<ExpandoObject> left, ExpandoObject[] right)
+        private static dynamic Merge(List<Object> left, List<Object> right)
         {
-            return Merge(left.ToArray(), right);
+            if (left.OfType<String>().Any())
+            {
+                return Merge(left.Cast<String>(), right.Cast<String>());
+            }
+
+            return Merge(left.Cast<ExpandoObject>(), right.Cast<ExpandoObject>());
         }
+
         #endregion
 
         # region Overloads to handle merging of primitive types
@@ -85,7 +87,6 @@ namespace Configuratively.Domain
             var col1Only = col1Group.Where(c => !col2Keys.Contains(c.Key)).ToList();
             col1Only.ToList().ForEach(c => c.ToList().ForEach(result.Add));
 
-
             // Merge the intersection
             foreach (var i in intersection)
             {
@@ -117,6 +118,7 @@ namespace Configuratively.Domain
             {
                 var leftToMerge = Dynamic.InvokeGet(left, i.left);
                 var rightToMerge = Dynamic.InvokeGet(right, i.right);
+
                 result.Add(i.left, Merge(leftToMerge, rightToMerge));
             }
 

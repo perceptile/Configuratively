@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Dynamic;
 using System.IO;
 using Configuratively.Hosting;
-using Configuratively.Workers;
-using JsonFx.Json;
-using JsonFx.Serialization;
 using Nancy;
 using Nancy.Testing;
+using Newtonsoft.Json;
 using PowerArgs;
 using Topshelf;
 
@@ -80,8 +79,7 @@ namespace Configuratively
                     Environment.Exit(1);
                 }
 
-                var jsonReader = new JsonReader();
-                dynamic jsonObject = jsonReader.Read(result.Body.AsString());
+                dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(result.Body.AsString());
 
                 if (Helpers.HasProperty(jsonObject, "_errors"))
                 {
@@ -94,7 +92,7 @@ namespace Configuratively
 
                 using (var stream = new StreamWriter(path))
                 {
-                    var writer = new JsonWriter(new DataWriterSettings { PrettyPrint = true });
+                    var writer = JsonConvert.SerializeObject(jsonObject);
                     writer.Write(jsonObject, stream);
                 }
             }

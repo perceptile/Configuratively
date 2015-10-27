@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using JsonFx.Json;
-using JsonFx.Serialization;
+using Newtonsoft.Json;
 
 namespace Configuratively
 {
@@ -29,21 +27,18 @@ namespace Configuratively
             return jsonFiles;
         }
 
-
-
         private static dynamic GetDynamicWithRouteFromJson(FileInfo fileInfo, string basePath)
         {
-            var jr = new JsonReader();
             dynamic obj;
 
             try
             {
-                obj = jr.Read(Encoding.ASCII.GetString(File.ReadAllBytes(fileInfo.FullName)));
+                obj = JsonConvert.DeserializeObject<ExpandoObject>(File.ReadAllText(fileInfo.FullName));
             }
-            catch (DeserializationException e)
+            catch (JsonReaderException e)
             {
                 obj = new ExpandoObject();
-                obj._error = string.Format("{0} {{{1},{2}}} at {3}", e.Message, e.Line, e.Column, fileInfo.FullName);
+                obj._error = string.Format("{0} {{{1},{2}}} at {3}", e.Message, e.LineNumber, e.LinePosition, fileInfo.FullName);
             }
 
             // generate an identifier
