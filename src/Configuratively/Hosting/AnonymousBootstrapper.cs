@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using Configuratively.Workers;
 using log4net;
@@ -69,6 +70,13 @@ namespace Configuratively.Hosting
             RepositoryPath = Path.GetFullPath(repositoryPath);
             HostUri = ConfigurationManager.AppSettings["hostUri"];
             MappingFile = ConfigurationManager.AppSettings["mappingFile"];
+        }
+
+        public ConfigSettings(string repositoryPath, string mappingFile)
+        {
+            RepositoryPath = Path.GetFullPath(repositoryPath);
+            HostUri = String.Empty;
+            MappingFile = mappingFile;
         }
 
         public ConfigSettings(string repositoryPath, string hostUri, string mappingFile)

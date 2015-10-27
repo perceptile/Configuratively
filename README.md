@@ -5,7 +5,10 @@
 Configuratively is a file based database for storing your environment and application configuration. It is easy to get started and supports a variety of use cases to fit your project.
 
 * Files are stored as JSON
-* RESTful API and Command-Line interfaces for retreiving configuration.
+* Configuration can be retrieved with any of the following:
+	* Self-Hosted RESTful API.
+	* Command-Line interface.
+	* C# Library.
 * Mapped queries to model hierarchies to override configuration values.
 
 Configuratively is written in C# and runs on the .NET platform but with an aim to work with [coreclr](https://github.com/dotnet/coreclr) for cross-platform availability.
@@ -156,7 +159,18 @@ Routes are described using a comma separated list in the form of `route1=output1
     > Save-Configuration -repositoryPath C:\repository -routes "test/web=web.json,environments/test=test.json"
     web.json
     test.json
-    
+
+## Generating configuration files using the Command-Line 
+
+You can also build the configuration repository within your application. 
+
+```csharp
+var reader = new ConfigurationReader(new ConfigSettings(repositoryPath, mappingFilePath));
+string jsonConfiguration = reader.Get("environments/dev");
+```
+
+You can use any JSON parser to deserialize this into a dynamic or typed object. Internally we use Newtonsoft.Json.
+
 ## Contributing
 
 We use and develop Configuratively for our own use, but we would love to help make it work for you too.

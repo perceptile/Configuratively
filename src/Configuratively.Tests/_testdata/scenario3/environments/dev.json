@@ -1,0 +1,12 @@
+{
+  "links": [
+    "templates/environments/default.json"
+  ],
+
+  "name": "dev",
+  "description": "dev environment",
+
+  "settings": {
+    "key" : "value"
+  }
+}
