@@ -3,7 +3,7 @@
 		"templates/environment/dev.json"
 	],
 
-	"name": "dev01",
+	"name": "##environmentType##01",
 	"description": "development environment",
 
     "settings": {

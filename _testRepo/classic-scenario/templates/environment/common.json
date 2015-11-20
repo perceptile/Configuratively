@@ -1,0 +1,8 @@
+{
+	"name": "##environmentType####environmentNumber##",
+	
+    "settings": {
+        "bar2":  "foo2-##name##",
+        "packageOverride": false
+    }
+}

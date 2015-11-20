@@ -25,7 +25,7 @@ namespace Configuratively.Api
 
             foreach (var route in routes)
             {
-                Get[route.Key] = _ => Response.AsJson((ExpandoObject)route.Value);
+                Get[route.Key] = _ => Response.AsJson(detokenise((ExpandoObject)route.Value));
             }
 
             // Define query endpoints
@@ -80,7 +80,7 @@ namespace Configuratively.Api
                                 response = DynamicMerge.DoMerge(responseObjects[i], response);
                             }
 
-                            return Response.AsJson((ExpandoObject)response);
+                            return Response.AsJson(detokenise((ExpandoObject)response));
                         }
 
                         return HttpStatusCode.BadRequest;
@@ -143,6 +143,13 @@ namespace Configuratively.Api
                 }
             }
             return routes;
+        }
+
+        private ExpandoObject detokenise(ExpandoObject data)
+        {
+            // TODO: We don't really want to create a new instance each time
+            var tokenResolver = new TokenResolver();
+            return tokenResolver.ResolveTokens(data);
         }
     }
 }

@@ -109,6 +109,7 @@
     <Compile Include="Domain\DynamicMerge.cs" />
     <Compile Include="Domain\DynamicRepository.cs" />
     <Compile Include="Domain\MappingManager.cs" />
+    <Compile Include="Domain\TokenResolver.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Hosting\AnonymousBootstrapper.cs" />

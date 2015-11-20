@@ -1,0 +1,10 @@
+{
+    "simple1": "static-value",
+    "simple2": "##simple1##",
+    "simple3": "##complex.child2##",
+    "complex": {
+        "child1": "foo",
+        "child2": "bar"
+    },
+    "simple4":  "##simple3##"
+}

@@ -1,0 +1,10 @@
+{
+	"links": [
+		"templates/environment/common.json",
+		"templates/environment/dev.json"
+	],
+
+	"environmentNumber": "03",
+	"description": "development environment",
+	"extra": "##someMissingToken##"
+}
