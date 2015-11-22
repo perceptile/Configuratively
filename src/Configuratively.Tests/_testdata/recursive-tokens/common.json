@@ -1,3 +1,9 @@
-﻿{ 
-    "basicType":  "common-type"
+﻿{
+    "basicType": "common-type",
+    "commonToken": "commonTokenValue",
+    "commonToken2": {
+        "nested1": { 
+            "nested2": "nestedValue"
+        }
+    }
 }
