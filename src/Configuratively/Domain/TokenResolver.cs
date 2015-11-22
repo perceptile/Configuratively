@@ -14,6 +14,8 @@ namespace Configuratively.Domain
         private const string TOKEN_REGEX = "##.*?##";
         private readonly TokenReferenceTracker _tokenTracker = new TokenReferenceTracker();
 
+        private Stack<string> _namespaceStack;
+
         private class TokenReference
         {
             public string Token { get; set; }
@@ -79,36 +81,30 @@ namespace Configuratively.Domain
 
         public dynamic ResolveTokens(dynamic repo)
         {
+            _namespaceStack = new Stack<string>();
             FindTokens(repo);
+
+            // Now we a complete set of tokens, we should be able to resolve them
             var resolvedRepo = resolveTokens(repo);
             return repo;
         }
 
         private void FindTokens(dynamic repo)
         {
-            string _itemId = string.Empty;
-            if (repo is IDictionary<string, object>)
-            {
-                if (((IDictionary<string, object>)repo).ContainsKey("_id"))
-                {
-                    object id;
-                    bool res = ((IDictionary<string, object>)repo).TryGetValue("_id", out id);
-                    if (res)
-                    {
-                        _itemId = id.ToString();
-                    }
-                }
-            }
-
             foreach (var item in repo)
             {
-                if (item is ExpandoObject)
+                if (item.Value is ExpandoObject)
                 {
-                    FindTokens(item);
-                }
-                else if (item is KeyValuePair<string, ExpandoObject>)
-                {
-                    throw new NotImplementedException("complex-type value found");
+                    // Before recursing down through the object graph, we use
+                    // a stack to keep track of the parent node so when we do
+                    // reach a leaf node we can derive its fully-qualified
+                    // namespace
+                    _namespaceStack.Push(item.Key);
+
+                    // Recurse
+                    FindTokens(item.Value);
+
+                    _namespaceStack.Pop();
                 }
                 else if (item is KeyValuePair<string, object>)
                 {
@@ -118,10 +114,16 @@ namespace Configuratively.Domain
                     foreach (var m in matches)
                     {
                         var token = m.ToString();
-                        // need a way to derive the fully-qualified namespace of a given key???
-                        var reference = repo._id;
-                        _tokenTracker.Add(token, reference);
+                        // Use the stack to derive a fully-qualified namespace for the current item
+                        var reference = _namespaceStack.Select(t => t).Reverse().ToList();
+                        reference.Add(item.Key);
+
+                        _tokenTracker.Add(token, string.Join(".", reference));
                     }
+                }
+                else
+                {
+                    throw new NotImplementedException("Unexpected scenario whilst finding tokens");
                 }
             }
         }
@@ -198,10 +200,10 @@ namespace Configuratively.Domain
                                 _tokenTracker.SetTokenValue(m.ToString(), tokenValue);
                             }
 
-                            var resovledValue = _tokenTracker.GetTokenValue(m.ToString());
-                            var updatedValue = itemValue.ToString().Replace(m.ToString(), resovledValue);
-                            keysToUpdate[key] = updatedValue;
-                            itemValue = updatedValue;
+                            var resovledTokenValue = _tokenTracker.GetTokenValue(m.ToString());
+                            var updatedItemValue = itemValue.ToString().Replace(m.ToString(), resovledTokenValue);
+                            keysToUpdate[key] = updatedItemValue;
+                            itemValue = updatedItemValue;
                         }
                     }
                 }
@@ -215,7 +217,5 @@ namespace Configuratively.Domain
 
             return repo;
         }
-
-
     }
 }
