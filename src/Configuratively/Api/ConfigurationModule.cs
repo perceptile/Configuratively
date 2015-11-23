@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -58,7 +59,10 @@ namespace Configuratively.Api
                             if (errors.Any())
                                 return Response.AsJson(new {_errors = errors});
 
-                            var result = queryResult.FirstOrDefault(i => i.name == queryValue);
+                            // detokenise the query results before trying to match, as the 'name' property
+                            // could itself be tokenised
+                            var detokenisedQueryResults = queryResult.Select(r => detokenise(r));
+                            var result = detokenisedQueryResults.FirstOrDefault(i => i.name == queryValue);
 
                             if (result == null)
                             {
@@ -80,7 +84,7 @@ namespace Configuratively.Api
                                 response = DynamicMerge.DoMerge(responseObjects[i], response);
                             }
 
-                            return Response.AsJson(detokenise((ExpandoObject)response));
+                            return Response.AsJson((ExpandoObject)response);
                         }
 
                         return HttpStatusCode.BadRequest;

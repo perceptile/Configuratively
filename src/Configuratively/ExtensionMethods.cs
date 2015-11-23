@@ -19,5 +19,13 @@ namespace Configuratively
                 source.Add(key, value);
             }
         }
+
+        public static void Update<TSource>(this IEnumerable<TSource> outer, Action<TSource> updator)
+        {
+            foreach (var item in outer)
+            {
+                updator(item);
+            }
+        }
     }
 }
